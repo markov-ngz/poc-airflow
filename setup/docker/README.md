@@ -17,11 +17,14 @@ docker compose -f airflow.docker-compose.yaml up -d
 
 custom build image avec DockerOperator et docker compose modifié pour donner accès à la socket docker de la machine host 
 
+Une fois les commandes passées:
+- aller à localhost:8080
+- User + pwd admin : airflow:airflow
 
 
 ## 2. Synchronisation  du projet DBT  à un repo distant
 ```
 docker compose -f git-sync-dbt-project.docker-compose.yaml up -d
 ```
-On utilisera la meme technique de mise à jour en production pour synchroniser les dags présents dans un répo git afin de les monter dans un volume 
+On utilisera la meme technique de mise à jour en production pour synchroniser les dags présents dans un répo git afin de les monter dans un volume au lieu de monter de notre répertoire hote.
 
