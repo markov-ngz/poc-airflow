@@ -23,6 +23,12 @@ Une fois les commandes passées:
 
 
 ## 2. Synchronisation  du projet DBT  à un repo distant
+
+Setup les variables d'environnements nécessaires
+```
+git-sync-dbt-project.env.bat
+```
+Lancer le conteneur pour populer le volume
 ```
 docker compose -f git-sync-dbt-project.docker-compose.yaml up -d
 ```
