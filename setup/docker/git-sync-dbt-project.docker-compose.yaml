@@ -1,0 +1,56 @@
+services:
+  # Service git-sync pour synchroniser le repository DBT
+  git-sync-dbt-project:
+    image: registry.k8s.io/git-sync/git-sync:v4.5.0
+    container_name: dbt-git-sync
+    user: "root"
+    environment:
+      # Configuration du repository
+      - GITSYNC_REPO=${MY_GITHUB_REPO}
+      - GITSYNC_BRANCH=main
+      # - GITSYNC_REF=HEAD
+      - GITSYNC_DEPTH=0
+      - GITSYNC_ROOT=/tmp/git/root
+      - GITSYNC_LINK=${SYNC_TARGET} # symlink to the root tree of the project 
+      - GITSYNC_SPARSE_CHECKOUT_FILE=/etc/git/sparse-checkout
+      - GITSYNC_ONE_TIME=true # Only run one time, no need to do it continuously 
+      # Configuration de la synchronisation
+      - GITSYNC_WAIT=180  # Synchronise toutes les 60 secondes
+      - GITSYNC_MAX_SYNC_FAILURES=5
+      - GITSYNC_SYNC_ON_START=true
+      
+      # Authentification avec PAT GitHub
+      - GITSYNC_USERNAME=${MY_GITHUB_ORG}
+      - GITSYNC_PASSWORD=${MY_GITHUB_PAT}  # Variable d'environnement
+      
+      # Configuration des permissions
+      # - GITSYNC_PERMISSIONS=0755
+      - GITSYNC_ADD_USER=true
+      # Options de logging
+      - GIT_SYNC_VERBOSE=9
+    restart: unless-stopped
+    volumes:
+      - dbt_project_data:/tmp/git/root/
+      - ./sparse-checkout:/etc/git/sparse-checkout
+    networks:
+      - git-sync-network
+    configs:
+      - source: sparse-checkout
+        target: /etc/git-secret/sparse-checkout
+
+
+configs:
+  sparse-checkout:
+    content: |
+      ${PATH_TO_DBT_PROJECT}
+      
+volumes:
+  dbt_project_data:
+    driver: local
+    name: dbt_project_volume
+
+# Définition des réseaux
+networks:
+  git-sync-network:
+    driver: bridge
+    name: git-sync-network

@@ -1,0 +1,5 @@
+set MY_GITHUB_REPO=
+set MY_GITHUB_ORG=
+set MY_GITHUB_PAT=
+set SYNC_TARGET=dbt_project
+set PATH_TO_DBT_PROJECT=
