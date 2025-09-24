@@ -28,19 +28,17 @@ services:
       - GITSYNC_ADD_USER=true
       # Options de logging
       - GIT_SYNC_VERBOSE=9
-    restart: unless-stopped
     volumes:
       - dbt_project_data:/tmp/git/root/
-      - ./sparse-checkout:/etc/git/sparse-checkout
     networks:
       - git-sync-network
     configs:
       - source: sparse-checkout
-        target: /etc/git-secret/sparse-checkout
+        target: /etc/git/sparse-checkout
 
 
 configs:
-  sparse-checkout:
+  sparse-checkout: # Use git sparse checkout to only copy part of the repository 
     content: |
       ${PATH_TO_DBT_PROJECT}
       
